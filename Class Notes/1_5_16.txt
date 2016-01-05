@@ -1,0 +1,45 @@
+1_5_16
+
+OS
+	-program that runs on the "raw" hardware
+	-resource manager
+		-each program gets time with the resource
+		-each program gets space on the resource
+	-standardizes interface across different tyes of hardware: extended machine
+	-hides teh messy details wich must be performed
+	-presents user with a virtual machine, easier to use
+	-may have potentially conflicting goals:
+		-use hardware efficiently
+		-give maximum performance to each user
+
+1st Generation
+	-direct input
+	-Run one job at a time
+
+3rd gen
+	-multiprogramming
+	-multiple jobs in memory, protected from one another
+	-resources split between jobs
+	-still not interactive -> user submits job, computer runs it, user gets results minutes (hours, days) later
+
+Timesharing
+	
+Storage Pyramid
+
+Operating System Concepts
+	-Processes (and trees of processes)
+	-Deadlock
+	-File systems and directory trees
+	-pipes -> won't talk about them
+		-communication as more of a general concept
+	-what files look like
+
+Processes
+	-program in execution
+	-process creates a process
+	-address space (memory) the program can use
+	-state (registers, including program counter & stack pointer)
+	-Os keeps track of all processes in a process table
+	-processes can create other processes
+		-process tree tracks these relationships
+		
