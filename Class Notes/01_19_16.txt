@@ -1,0 +1,174 @@
+01_19_16
+COEN177 Operating Systems
+
+Critical Regions
+  - contention must be handled
+  - use critical regions to provide mutual exclusion and help fix race conditions
+  - Four conditions
+    - no two processes simultaneously in critical region
+    - no assumptions made about speeds or number of cpus
+    - no process running outside its critical region may block another process
+    - A process may not wait forever to enter its critical region
+  - Only one at a time
+
+Busy Waiting
+
+  #define	 FALSE	 0
+  #define	 TRUE	 1
+  #define	 N	 2	 // # of processes
+  int turn;	 	 // Whose turn is it?
+  int interested[N];	 // Set to 1 if process j is interested
+  void enter_region(int process) {
+    int other = 1-process; // # of the other process
+    interested[process] = TRUE;	 // show interest
+    turn = process;	 // Set it to my turn
+    while (turn==process && interested[other]==TRUE)
+    ;	 // Wait while the other process runs
+  }
+  void leave_region (int process)
+  {
+  interested[process] = FALSE; // I’m no longer interested
+  }
+
+  - but we want to wait and change at the same time, just one instruction
+
+Mono vs Mico
+  - false
+  -
+
+System calls vs function calls
+  - false
+
+
+*****Read up through the baker algorithm for next class
+
+Hardware for Synchronization
+  - Prior methods work, but...
+    - may be complex
+    - require busy waiting: process spins in a loop waiting for something to happen, wasting CPU time
+  - Solution: use hardware
+  - Resource starvation
+  - Deadlog
+  - Several hardware methods
+    - Test & set: test a variable and set it in one instruction
+    - Atomic swap: swwitch register & memory in one instruction
+    - Turn off interrupts
+
+Mutual exclusion using hardware
+  - Single shared variable lock
+  - Still requires busy waiting, but code is much simpler
+  - Two versions
+    - Test and set
+    - Swap
+  - works for any number of processes
+  - possible problem with requirements
+    - non-concurrent code can lead to bound breaking
+
+
+Semaphores
+
+Eliminating busy waiting
+  - something like semaphores
+  - Problem: previous solutions waste CPU time
+    - Both hardware and software solutions require spin locks
+    - allow processes to sleep while they wait to execute their critical sections
+  - Problem: priority inversion (higher priority process waits for lower priority process)
+  - Solution: use semaphores
+    - synchronization mechanism that doesn't require busy waiting during entire critical section
+  - Implementation
+    - Semaphore S accessed by two atomic operations
+      - Down(s):while(S<=0){};S-=1;
+      - Up(S):S+=1;
+
+Critical sections using semaphores
+  - define a class called semaphore
+  - mutex
+  - class allows more complex implementations for semaphores
+  - details hidden from processes
+  - code for individual process is simple
+
+  while (1) {
+    down(mutex);
+    //critical section
+    up(mutex);
+    //remainder of code
+  }
+
+Implementing semaphores with blocking
+  - assume two operations
+    - sleep suspends current process
+    - wakeup allows process P to resume execution
+  - Semaphore is a class
+    - track value of semaphore
+    - keep a list of processes waiting for the semaphore
+    - opearions still atomic
+
+
+Semaphores for general synchronization
+  - we want to execute B in P1 only after A executes in P0
+  - use a semaphore initialized to 0
+  - Use up() to notify P1 at the appropriate time
+
+Types of semaphores
+  - two different types of semaphores
+    - counting semaphores
+    - binary semaphores
+  - counting semaphore
+    - value can range over an unrestricted range
+  - Binary semaphore
+    - only two values possible
+      - 1 means the semaphore is available
+      - 0 means a process has acquired the semaphore
+    - may be simpler to implement
+  - possible to implement one type using the other
+
+Monitors
+
+Monitor Usage
+  - provides the
+
+Condition variables in monitors
+  - Problem: how can a process wait inside a monitor?
+    - can't sleep: no way for anyone else to enter
+    - so use a condition variable
+  - Condition varibales support 2 operations
+    - Wait - suspend until signaled
+    - Signal - waku up exactly one process waiting on this condition variable
+      - if no process is waiting, signal has no effect
+      - signals on condition variables aren't saved up
+    - Condition variables are only usable within monitors
+    - If sleeping, not in the monitor
+      - need somebody to come into the monitor and wake you
+
+Monitor semantics
+  - Problem: P signals on condition var X, waking Q
+    - both can't be active in the monitor at the same time
+    - which continues first?
+  - Mesa semantics
+    - signaling process P continues first
+    - Q resumes when P leaves the monitor
+    - Seems more logical: why suspend P when it signals
+  - Hoare semantics
+    - awakened process Q continues first
+    - P resumes when Q leaves the monitor
+    - May be better: the condition that Q wanted may no longer hold when P leaves teh monitor
+
+Locks & condition variables
+
+Message passing
+  - Synchronize by exchanging messages
+  - Two primitives:
+    - send - send a message
+    - receive - receive a message
+    - both may specify a channel to sue
+  - Issue - how does teh sender know the receiver got the message?
+  - Issue: authentication
+
+Barriers
+  - used for synchronizing multiple processes
+  - processes wait at a barrier until all in the group arrive
+  - after all have arrived, all processes can proceed
+  - may be implemented using locks and condition variables
+
+Deadlock and starvation
+  - 

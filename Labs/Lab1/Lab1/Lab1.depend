@@ -1,0 +1,15 @@
+# depslib dependency file v1.0
+1452738364 source:/home/maskoken/Dropbox/Documents/COEN177/Labs/Lab1/Lab1/main.cpp
+	<stdio.h>
+	<sys/wait.h>
+	<unistd.h>
+	<string.h>
+	<errno.h>
+
+1452788093 source:/home/maskoken/Dropbox/Documents/COEN177/Labs/Lab1/Lab1/mkoken1.cpp
+	<stdio.h>
+	<sys/wait.h>
+	<unistd.h>
+	<string.h>
+	<errno.h>
+

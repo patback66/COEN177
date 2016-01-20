@@ -1,0 +1,216 @@
+01_14_16.txt
+Operating Systems
+
+Process & Thread information
+	-	per process, per thread
+
+Implementing threads
+	-	User-level
+	-	Kernel-level
+
+Best scheduling?
+	-	it depends
+
+Scheduling
+	-	created processes that are protected from each other, want to make them look like they're all parallel, keep the cpu busy
+	-	mechanism, not policy
+
+Why Schedule?
+	-	processes don't use the CPU all the time
+	-	bursts of usage, I/O wait
+	-	Some are CPU bound, not many I/O requests
+	-	Other processes are I/O bound and make many kernel requests
+
+When are processes scheduled?
+	-	at the time they enter the system
+		-	batch systems
+		-	2 types
+			1)	submission of a new job causes the scheduler to run
+			2)	scheduling only done when a job voluntarily gives up the CPU
+	-	Fixed intervals
+		-	necessary for interactive systems
+		-	may also be used for batch systems
+		-	scheduling algorithms at each interrupt, and picks the next process from teh pool of "ready" processes
+
+Scheduling goals
+	-	All systems
+		-	Fairness; give each process a fair share of the CPU
+		-	enforcement: ensure that the stated policy is carried out
+		-	balance: keep all parts of the system busy
+	-	Batch systems
+		-	throughput: maximize jobs per unit time (hour)
+			-	long process might not get taken care of
+		-	turnaround time: minimize time users wait for jobs
+		-	CPU utilization: keep the CPU as busy as possible
+	-	interactive systems
+		-	response time: respond quickly to users' requests
+		-	proportionality: meet users' expectations
+	-	real time systems
+		-	meet deadlines: missing deadlines is a system failure
+		-	predictability: same type of behavior each time
+		-	will not make a best effort
+		-	will not launch processes it cannot grant the resources to
+		-	interface to set deadlines
+
+Measuring scheduling performance (pick 2)
+	-	Throughput
+		-	amount of work completed per second (minute, hour)
+		-	higher throughput usually means better utilized system
+	-	Response time
+		-	
+	-	Turnaround Time
+
+Interactive vs batch
+	-	Batch
+		-	first come first serve
+		-	shortest job first
+		-	shortest remaining time first
+		-	priority (non-preemptive)
+	Interactive
+		-	round-robin
+		-	priority (preemptive)
+		-	multi-level feedback queue
+		-	lottery scheduling
+
+FCFS (First Come First Serve)
+	-	goal: do jobs in the order they arrive
+		-	fair in the same way a bank teller line is fair
+	-	simple algorithm
+	-	problem: long jobs delay every job after them
+		-	many processes may wait for a single long job
+	-	wait time added to subsequent jobs
+
+Shortest Job First
+	-	Goal: do the shortest job first
+		-	short jobs complete first
+		-	long jobs delay every job after them
+	-	Jobs sorted in increasing order of execution time
+		-	ordering of ties doesn't matter
+	-	time waiting to start running
+	-	time to complete
+	-	turnaround: order doesn't matter
+	-	Shortest Remaining Time First - preemptive form of SJF
+		-	re-evaluate when a new job is submitted
+		-	new job runs if remaining time is less than current job
+	-	Problem: how does the scheduler know how long a job will take
+
+Three-level scheduling
+	-	jobs held in input queue until moved into memory
+		-	pick complementary jobs: small and large, CPU & I/O intensive
+		-	jobs move into memory when admitted
+	-	CPU scheduler picks next job to run
+	-	Memory scheduler picks some jobs from main memory and moves them to disk if insufficient memory space
+
+Round Robin Scheduling
+	-	Round robin scheduling
+		-	give each process a fixed time slot (quantum)
+		-	rotate through ready processes
+		-	each process makes some progress
+		-	Run until give up CPU or time is up
+	-	What's a good quantum
+		-	Too short: many process switches hurt efficiency
+		-	Too long: poor response to interactive requests
+		-	Typical length: 10-100ms
+
+Priority scheduling
+	-	assign a priority to each process
+		-	ready process with highest priority allowed to run
+		-	running process may be interrupted after its queantum expires
+	-	priorities may be assigned dynamically
+		-	reduced when a process uses CPU time
+		-	increased whena process waits for I/O
+	-	Often, processes grouped into multiple queues based on priority, and run round-robin per queue
+
+Shortest Process Next
+	-	Run the process that will finish the soonest
+		-	In interactive systems, job completion time is unknown!
+	-	Guess at completion time based on previous runs
+		-	Update estimate each time the job is run
+		-	Estimate is a combination of previous estimate and most recent run time
+	-	Not often used because round robin with priority works so well!
+
+Lottery
+	-	Give processes “tickets” for CPU time
+		-	More tickets => higher share of CPU
+	-	Each quantum, pick a ticket at random
+		-	If there are n tickets, pick a number from 1 to n
+		-	Process holding the ticket gets to run for a quantum
+	-	Over the long run, each process gets the CPU m/n of the time if the process has m of the n existing tickets
+	-	Tickets can be transferred
+		-	Cooperating processes can exchange tickets
+		-	Clients can transfer tickets to server so it can have a higher priority
+	-	what if the OS isn't on one machine?
+
+Policy versus mechanism
+	-	Separate what may be done from how it is done
+		-	allows
+			-	priorities to be assigned to processes
+			-	cpu to select processes with high priorities
+		-	policy set by what piorities are assigned to processes
+
+FOR NEXT CLASS: BE UP TO DATE ON
+	-	CHAPTER 1 MATERIAL
+	-	WHAT'S A PROCESS
+	-	PROCESSES AND THREADS
+
+BEGIN: CHAPTER 2: INTERPROCESS COMMUNICATION AND SYNCHRONIZATION
+
+Example: bounded buffer problem
+
+	shared vars
+		const in n;
+		typedef ... Item;
+		Item buffer[n];
+		int in = 0, out = 0, counter = 0;
+	Producer
+		Item pitm;
+		while(1) {
+			...
+			produce an item into pitm
+			...
+			while (counter == n)
+				;
+			buffer[in] = pitm;
+			in = (in+1)%n;
+			counter +=1;
+		}
+	Consumer
+		Item citm;
+		while (1) {
+			while (counter == 0)
+				;
+			citm = buffer[out];
+			out = (out+1) % n;
+			counter -= 1;
+			...
+			consume the item in citm
+			...
+		}
+
+	WE GET A RACE CONDITION AT counter+=1, counter-=1;
+
+Problem: race conditions
+	-	cooperating processes share storage (memory)
+	-	both may read and write the shared memory
+	-	Problem: can't guarantee that read followed by write is atomic
+		-	ordering matters
+	-	this can result in erroneous results!
+	-	wee need to eliminate race conditions...
+Critical regions
+	-	use critical regions to provide mutual exclusion and help fix race conditions
+	-	four conditions to provide mutual exclusion
+		-	no two processes simultaneously in critical region
+		-	no assumptions made about speeds or number of CPUs
+		-	no process running outside its critical region may block another process
+		-	a process may not wait forever to enter its critical region
+	-	THREADSAFE CODE
+
+Busy waiting: strict alternation
+	-	use a shared variable (turn) to keep track of whose turn it is
+	-	waiting process continually reads teh variable to see if it can proceed
+		-	spin lock
+	-	avoids race conditions, but doesnt satisfy criterion 3 for critical regions
+	-	only protect the critical region -> while loop only for the section where the race condition may be met
+
+Bakery algorithm
+

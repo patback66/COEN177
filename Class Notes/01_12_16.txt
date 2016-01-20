@@ -1,0 +1,140 @@
+01_12_16
+
+Processes
+	-	A set of constructions that can be executed
+	-	Request an operation
+
+Virtual Machines
+	-	How to debug an OS
+
+Processes and threads
+	-	processes
+	-	threads
+		-	multiple threads of execution
+	-	scheduling
+	-	interprocess commmuncation
+	-	classical IPC problems
+	-	Callstack
+
+	STACK
+
+	DATA
+	TXT
+
+What is a process
+	-	Code, data, and stack
+		-	usually (but not always) has its own address space
+	-	program state
+		-	cpu registers
+		-	program counter (current location in the code)
+		-	stack pointer
+	-	only one process can be running in the CPU at any given time
+
+The process model
+	-	How many things happen at the exact same time? none
+	-	Multiprogramming of four programs
+	-	Conceptual model
+		-	4 independent processes
+		-	processes run sequentially
+	-	only one program active at any instant!
+		-	that instant can be very short
+		-	only applies if there's a single CPU in the system
+
+When do processes end?
+	-	under its own volition - I'm done, error condition
+	-	involuntary
+	-	Conditions that terminate processes can be
+		-	voluntary
+		-	involuntary
+	-	Voluntary
+		-	Normal exit
+		-	Error exit
+	-	Involuntary
+		-	Fatal error (only sort of involuntary)
+		-	killed by another process
+
+Processes in the OS
+	-	Two "layers" for processes
+	-	Lowest layer of process-structured OS handles interrupts, scheduling
+	-	Above that layer are sequential processes
+		-	Processes tracked in the process table
+		-	Each process has a process table entry
+
+What's in a process table entry?
+	-	File descriptors
+		-	local to the processes
+
+What happens ona trap/interrupt?
+	
+Why use threads?
+	-	 allow a single application to do many things at once
+		-	simpler programming model
+		-	less waiting
+	-	Threads are faster to create or destroy
+		-	no separate address space
+	-	Overlap computation and I/O
+		-	could be done without threads, but it's harder
+	-	Example:
+		-	word processor
+		-	thread to read from keyboard
+		-	thread to format document
+		-	thread to write to disk
+
+Multithreaded Web server
+	while(TRUE) {
+		getNextRequest(&buf);
+		handoffWork(&buff);
+	}
+
+	while(TRUE) {
+		waitForWork(&buf);
+		lookForPageInCache(&buf, &page);
+		if(pageNotInCache(&page)) {
+			readPageFromDisk(&buff, &page);
+		}
+	}
+	returnPage(&page);
+
+Three ways to build a server
+	1)	Thread model
+		-	parallelism
+		-	blocking system calls
+	2)	Single-threaded process:slow, but easier to do
+		-	non parallelism
+		-	blocking system calls
+	3)	Finite-state machine (event model)
+		-	each activity has its own sstate
+		-	states change when system calls complete or interrupts occur
+		-	parrelism
+		-	nonblocking system calls
+		-	interrupts
+
+Implementing threads
+	-	User-level threads
+		+	no need for kernel support
+		-	may be slower than kernel threads
+		-	harder to do non-blocking I/O
+	-	kernel-level threads
+		+	more flexible SCHEDULING
+		+	non-blocking I/O
+		-	NOT portable
+
+Scheduling
+	-	Best scheduler? depends on your goals
+		-	the one that best meets your goals
+	-	What is scheduling?
+		-	Goals
+		-	Mechanisms
+	-	Scheduling on batch systems
+	-	Scheduling on interactive systems
+	-	Other kinds of scheduling
+		-	Real-time scheduling
+	-	Best policy for throughput - do the quickest first
+		-	also good for exams
+
+Shell in lab
+	-	execv
+	-	execp
+	-	Actually make the shell work
+	-	fork
+
