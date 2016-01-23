@@ -1,0 +1,112 @@
+01_21_16
+COEN 177: Operating Systems
+
+Deadlock and starvation
+
+Semaphores
+
+Classical Synchronization problems
+  - Bounded buffer
+    - Multiple producers and consumers
+    - Synchronize access to shared buffer
+  - Readers & Writers
+    - Many processes taht may read and/or write
+  - Dining Philosophers
+
+Bounded Buffer problem
+  - Goal: implement producer-consumer without busy waiting
+  - Up/Down mutex around the problem
+  - Semaphore that represents the empty slots in the queue
+
+Readers-writers problem
+  - How to coordinate multiple readers & writers
+  - have the first person who reads grab a mutex
+    - allow other people who wish to read continue, but no mutex
+    - last release the mutex
+  - writer grab when done
+
+Dining Philosophers
+  - 1: use a semaphore for each chopstick
+  - 2: acquire resources in ascending order
+  - 3: indicate intention to acquire resource
+    - superqueue - don't have too many waiting at once
+
+Sleepy Barber Problem
+  - keep track of what is coming in - limited waiting space
+  - leave if no free space
+  - semaphore up will never stop you
+  -
+
+Deadlock
+--------------------
+
+When do deadlocks happen
+  - When
+    - Processes are granted exclusive access to devices or software constructs (resources)
+    - Each deadlocked process
+
+Overview
+  - Resources
+  - Why?
+  - Dealing with them
+    - ignore: ostrich algorithm
+    - detecting & recovering from deadlock
+    - avoiding deadlock
+    - preventing deadlock
+
+When
+  - Processes are granted exclusive access to devices or software constructs (resources)
+  - Each deadlocked process needs a resource held by another deadlocked process
+  - Consume resources unnecisarily, keep them locked up
+
+Using Resources
+  - Sequence required to use
+    - request
+    - use
+    - release
+  - Can't use the resource if request is denied
+    - requesting process has options
+
+What is a deadlock
+  - "A set of processes is deadlocked if each process in the set is waiting for an event that only another process in the set can cause"
+  - Usually, the event is release of a crurrently held resource
+  - In deadlock, none of the processes can
+    - run
+
+Four Conditions for deadlock
+  - Mutual exclusion
+    - each resource is assigned to at most one process
+  - Hold and wait
+    - a process holding resources can request more resources
+  - No preemption
+    - Previously granted resources cannot be forcibly taken away
+  - Circular wait
+    - there msut be a circular chain of 2 or more processes where each is waiting for a resource held by the next memnber of the chain
+
+Dealing with deadlock
+  - Ignore the problem altogether
+    - Hopefully it'll never happen
+  - Detect deadlock and recover from it
+  - Dynamicallly avoid deadlock
+    - careful resource allocation
+  - Prevent deadlock
+    - remove at least one of the four necessary conditions
+
+Not getting into deadlock
+  - find ways to detect and reverse - make somebody release a resource
+  - stop from happening in the first place
+
+Detecting deadlocks using graphs
+  - Process holdings and requests in the table and in the graph (they're equivalent)
+  - Graph contains a cycle -> deadlock
+    - easy to pick out by looking at it (in this case)
+    - need to mechanically detect deadlock
+  - not all processes are deadlocked (A, C, F not in deadlock)
+
+For Next Week
+  - all ipc examples through barber problem
+  - Detecting a loop
+    - fairly straightforward
+    - recursive
+    - kind of like dfs
+    - nodes have unique names (but not necessarily)
