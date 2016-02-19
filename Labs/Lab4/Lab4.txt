@@ -1,0 +1,16 @@
+COEN 177 Lab 4
+I/O Speed tests
+HOW TO TEST SPEED TESTS OF READING AND WRITING
+
+sync; dd if=/dev/zero of=tempfile bs=1M count=1024; sync
+
+#dd if=tempfile of=/dev/null bs=1M count=1024
+
+#clear the cache
+sudo /sbin/sysctl -w vm.drop_caches=3
+dd if=tempfile of=/dev/null bs=1M count=1024
+
+cat /dev/random | head -c numBuytes > file.txt
+ls -l
+
+Assignment 3: note the random, how you handle that -> doesn't perform the same

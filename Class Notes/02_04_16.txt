@@ -1,0 +1,115 @@
+02_04_16
+COEN 177 Operating Systems
+
+Optimal page replacement algorithm
+  - What's the best we can possibly do?
+  - Algorithm: replace the page that will be used furthest in the future
+  - Nice, but not achievable in real systems
+
+FIFO
+  - maintain linked list of all pages
+    - maintain the order in which they enteered memory
+  -HORRIBLE, HORRIBLE, HORRIBLE IDEA
+  - Page at front of list replaced
+  - Adantage: (really) easy to implement
+  - Disadvantage: page in memory the longest may be often used
+    - this algorithm forces pages out regardless of usage
+    - Usage may be helpful in determining which pages to keep
+
+Second chance page replacement
+  - modify FIFO to avoid throwing out heavily used pages
+    - if reference bit is 0, throw the page out
+    - If reference bit is 1
+      - reset the ref bit to 0
+      - move page to the tail of the list
+      - continue search for a free page
+    - still easy to implement, and better than plain FIFO
+
+Clock algorithm
+  - same functionality as second chance
+  - simpler implementation
+  - clock hand points to the next page to replace
+    - if R=0, replace page
+    - if R=1, set R=0 and advance the clock hand
+  - Continue until page with R=0 is found
+    - this may involve going all the way around the clock
+
+MIDTERM REVIEW
+Monolithic operating system
+  - monolith -> single large piece of stone
+  - switch off interrupts -> make sure semaphore is atomic
+    = done by the kernel
+  - all code that does OS stuff is in the kernel -> one big piece
+    = majority of functionality is in kernel
+    = lots in higher state
+    = all of OS is in kernel, alone in supervisor mode
+
+Monitors
+  - Have to be in monitor to access condition variables
+  - No two threads can be running in the monitor at the same time
+    - sleeping? not running. Somebody else can come in and signal
+      - but who wakes up depends on semantics
+  - Avoid race conditions
+
+Virtual Memory
+  - A HUGE, AWESOME LIE
+  - Address translation architecture
+  - Virtual memory -> support multiprogramming
+    = Put stuff in ram wherever so it can be used
+  - Avoid swapping memory
+    - use page table to refer to actual memory location
+  - Write as if you have all the RAM
+  - OS worries about the memory.
+    - When program creates memory, map to (mostly) arbitrary part of ram (page frame)
+    - access the page that will be put into page frame
+    - Remapping of address at every instruction. Remap from fake to real
+    - MMU is hardware that takes care of this
+      - Translation lookaside buffer
+    - virtual address comes in, physical comes out
+    - need to handle the case when an address is not valid (not in RAM) (page file missing)
+  - so part hardware, when the OS is involved (maybe just DS that hw knows how to read)
+    - only needs to bug you if the address is invalid
+
+Deadlock processes
+  - Getting VERY VERY VERY VERY VERY LUCKY
+    - something external has to happen
+  - Deadlock cannot just end, otherwise it wasn't deadlock
+
+FIFO never causes starvation?
+  - if there's never any resources to begin with
+
+Semaphores
+  - those that can count, and those that can't count past 1
+    - up and down
+      - up(x) -> increase it's value
+      - down(x) -> decrease it's value
+        - NO YOU CAN'T DECREASE 0
+          - YOU NEED TO WAIT
+          - ONLY UP CAN WAKE YOU UP
+  - mutex
+  - counting, binary, mutex
+
+  -down(mutex), up(mutex)
+
+  - 2 state variable -> free and posessed
+    - acquire, release
+    - acquire(lock)
+    - release(lock)
+    - symantically, like a binary semaphore
+      - state though, instead of value
+
+Condition variables (like locks)
+
+Has and wants/ has and max
+Deadlock detection
+  - algorithm
+
+MPI - message passing interface
+  - most popular way for supercomputing writing
+
+Synchronization? Why is it interprocess communication?
+Why is it bad to share data?
+  Race conditions
+  Multithreading? Multiprogramming -> cheaper, more affordable,
+
+  WHY

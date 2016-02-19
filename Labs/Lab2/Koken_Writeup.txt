@@ -1,0 +1,18 @@
+Matthew Koken
+
+Where does the scheduler reside? How does it work?
+The code for scheduling resides in /usr/src/kernel/proc.c
+proc.c contains the function pick_proc that actually picks the next process to run. The scheduling algorithm selects from queues - NR_SCHED_QUEUES. The lowest number queue has the highest priority. When pick_proc is called, it iterates through the queues in order of priority to find the next process to run. If the current queue has a ready process, it will take from the head and run that process.
+
+How do we randomize? What does the randomizer do?
+Using the fork loop, the original algorithm prints pids in mostly ascending order.
+In pick_proc, minix chooses what process will get to run next. In it's queue are NR_SCHED_QUEUES number of queues, with the highest number being the lowest priority. Each queue holds a list of processes of equal priority that want to run. It chooses from the highest priority queues first and moves on to lower priorities if the queue is empty, but the process that was added to that queue first will always be run first since the original algorithm will always take from the head of each queue first. When allowing "rp = random_process(rdy_head[q])" to run, it will generate a psuedorandom number. It then will iterate through current queue for the random number amount of times, picking a random process from the queue of equal priority processes. This means that all processes of the same priority have an equal chance of being run first, instead of whoever arrived first.
+
+How do we tell it's random?
+A fork loop! the file tester.c contains a loop that will fork multiple times. Using the original scheduling algorithm, the test program prints process ids in ascending order. Each process is added to the end of the same priority queue, so the first added will get run first, hence the ascending order. After switching to the random scheduling, we should see a random distribution of pids. For example, a test run prints pids 310, 314, 309, 306, 312... Here, we can see that the processes are no longer in asceding order. They are called randomly - the order changes each time the program is run and pids of higher or lower numbers may be seen.
+
+How can we test better?
+More forking! More running processes, each doing something will be able to better test the randomness. Adding more resource and I/O requests will also give a better idea of how well the scheduling will work. However, it is important to keep the processes the same priority as the others as they are called. Adding randomness to the number of forks as well could be helpful with preventing preditiction of upcoming processes. Within each process, having a random set of tasks would also add to the unpredictability of the processes. The timespan for running may also need to be modified. For a small test, the randomness may seem fine. However, a long term test with many processes under a psuedorandom number generator may provide different results - patterns may emerge on a much larger scale test.
+
+How can the randomization be better?
+The current algorithm only generates a psuedorandom number based on the tsc from a u64_t. Using a random seed on kernel startup and the random number generator utilities like randint would give a different distribution of random numbers. Using other, more truely random generators may provide better results for randomness. For even more true randomness, the priority queue system could be randomized. Currently, the queues are in a list of priorities. If the scheduler were to randomly pick a queue, and then randomly pick from within the queue, then true randomness for process scheduling could be obtained. That would have its own issues, however.

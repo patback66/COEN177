@@ -1,0 +1,84 @@
+02_11_16
+COEN 177 Operating Systems
+
+Which version of second chance?
+  Clock or regular?
+  1) Array with data shifting
+  2) Linked lists (w/pointer updates)
+  3) Array with index shifting only
+    - USE ARRAY (w/ index shifting only) (ie circular queue)
+    - USE IT
+
+w1x1 + w2x2 + ...
+
+(axby)/(cz) -> take the log -> log(ax) + log(by) - log(cz)
+
+Virtual memory
+  - WANT TO HARDLY EVER HAVE TO USE IT
+  -
+
+Page Replacement Algrithms
+
+OPTIMAL Page Replacement Algorithm
+  - What's the best we can possibly do?
+    = Assume perfecct knowledge of the future
+
+NRU
+  - ref bit and dirty bit
+    = set when a page is referenced and/or modified
+  - 4 classes
+    = 0: not referenced, not dirty
+    = 1: not referenced, dirty
+    = 2: referenced, not dirty
+    = 3: referenced, dirty
+  - Clear reference bit for all pages periodically
+    = Can't clear dirty bit: needed to indicate which pages needd to be flushed to disk
+    = Class 1 contains dirty pages where reference bit has been cleared
+  - Algorithm: remove a page from the lowest non-empty class
+    = Select a page at random from that class
+  - Easy to understand and implement
+  - performance adequate (though not optimal)
+
+FIFO
+  - TERRIBLE
+
+Second Chance
+  - Throw out if not referenced
+  - Keep ones that have
+  - Minimum amount of work to get a better result
+
+Simulating LRU in software
+  - Few computers have the necessary hardware to implement full LRU
+  -
+
+Againg Replacement Algorithm
+  - Reduce counter values over time
+    = Divide by two every clock cycle (use right shift)
+    = More weight given ot more recent references
+  - Select page to be evicted by finding the lowest counter value
+  - Algorithm
+    = Every clock tick, shift all counters right by 1 bit
+    = On reference, set leftmost bit of a counter (can be done by copying the reference bit ot the counter at the clock tick)
+
+Working Set
+  - Keeps track of time of last access of each page
+
+Modeling Page Replacement Algorithms
+  - Compare algorithms
+  - Number of parameters within an algorithm
+    = number of available physical pages
+    = Number of bits for aging
+
+How is modeling done?
+  - Through a big table
+
+Belady's anomaly
+  - Some algorithms -> give more resources, encounter more page faults
+  INF 1 2 3 4 5 6 7 8
+  8   4 3 3 3 4 1 0 0
+
+Predicting page fault rates using distance
+  - page prefetch
+  - Distance can be used to predict page fault rates
+  - Make a single pass over the reference string to generate the distance string on-the-fly
+  - Keep an array of counts

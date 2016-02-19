@@ -1,0 +1,178 @@
+01_28_16
+COEN 177 Operating Systems
+
+Midterm: 2/2
+
+Fixed Partition Memory
+  - you get x memory, and that's it
+
+How many processes are enough?
+  - Several memory partitions
+  - Lots of processes wanting to use the CPU
+  - Tradeoff
+    - More processes utilize the CPU better
+    - Fewer processes use less memory (cheaper)
+  - How many processes do we need to keep the CPU fully utilized?
+    - this will help determine how much memory we need
+    - Is this still relevant with memory costing less?
+      - Yes
+
+Modeling Multiprogramming
+  - More I/O wait means less processor utiliziation
+  - THis means that the OS should have more processes if they're I/O bound
+  - More processes -> memmory management and protection more important
+  - Calculate odds of doing I/O at the same time
+  - How utilized is a system?
+    - pick processes with least I/O, multiply it out, get percentage
+  - Keeping the CPU more busy costs a little CPU per process
+
+Base and Limit Registers
+  - Special CPU registers: base and limit
+    - Access to the registers limited to system mode
+    - Registers contain:
+      - Base: start of the process's memory partition
+      - Limit: length of th eprocess's memory partition
+  - Address generation
+    - Physical address: location in actual memory
+    - Logical address: location from the process's point of view
+    - Physical address = base + logical addresss
+    - Logical address larger than limit -> error
+
+Swapping
+  - Memory allocation changes as
+    - Processes come into memory
+    - Processes leave memory
+      -  swapped to disk
+      - complete execution
+  - Gray regions are unused memory
+  - No more wasted space, internal fragmentation
+
+Swapping: Leaving room to grow
+  - need to allow programs to grow
+    - allocate more memory for data
+    - larger stack
+  - Handled by allocating more space than is necessary at the start
+    - Inefficient: wastes memory that's not currently in use
+    - What if the process requests too much memory
+  - Memory between stack and data is unused
+
+Tracking memory usage: bitmaps
+  - Keep track of free/allocated memory regions with a bitmap
+    - Corresponds to a fixed-size region of memory
+    - Bitmap is a constant size for
+
+Tracking memory usage: Linked lists
+  - Free list/Free map
+  - Keep track of free/allocated memory regions with a linked list
+  - Efficient if chunks are large
+  - Free list must be sorted in order of address
+    - should be accessible by size of free region -> may need secondary accessor
+    - more work to free memory, less work to find memory of suitable size
+
+Allocating Memory
+  - Search through region list to find a large enough space
+  - Suppose there are several choices? Which to use?
+    - First fit: first suitable hole on the list
+    - Next fit: the first suitable after the previously allocated hole
+    - Best fit: the smallest hole that is larger than the desired region (wastes least space?)
+    - Worst fit: the largest available hole (leaves largest fragment)
+  - Option: maintain separate queues for different-size holes
+    - BEST FIT IS THE WORST POSSIBLE STRATEGY TO USE
+      - NEVER USE IT
+
+Freeing Memory
+  - Allocation structures must be updated when memory is freed
+  - Easy with bitmaps: just set the appropriate bits in the bitmap
+
+Limitations of swapping
+  - Problems
+    - Process must fit into physical memory
+    - memory becomes fragmented
+      - external fragmentation
+      - compaction needed
+    - processes are either in memory or on disk: half and half doesn't do any good
+  - Overlays solved the first problem
+    - Bring in pieces of the process over time (typically data)
+    - Still doesn't sove the problem of fragmentation or partially resident processes
+
+Virtual memory
+  - Allow the OS to hand out more memory than exists on the system
+  - Keep recently used stuff in physical memory
+  - Move less recently used stuff to disk
+  - Keep all hidden from processes
+    - Processes still see an address space from 0-max address
+    - Movement of information to and from disk handled by the OS without process help
+  - Virtual memory (VM) especially helpful in multiprogrammed systems
+    - CPU schedulels process B while process A waits for its memory to be retrieved from disk
+
+Virtual and physical addresses
+  - Program uses virtual addresses
+    - Addresses local to the process
+    - Hardware translates virtual address to physical address
+    - 1 memory access instruction to fetch the instruction, likely a second
+      - so MINIMUM 1 ACCESS PER INSTRUCTION
+  - Translation done by the Memory management Unit
+    - useually on the same chip as the CPU
+    - Only physical addresses leave the CPU/MMU
+  - Physical memory indexed by physical addresses
+  80% time on I/O
+    accessing memory normally is a large chunk of this -> access memory on disk
+
+Paging and Page Tables
+  - Virtual adddresses mapped to physical addresses
+    - unit of mapping = page
+    - all addresses in the same virtual page are in the same physical page
+    - Page Table Entry contains translation for a single page
+  - Table translates virtual page number to physical page number
+    - Not all virtual memory has a physical page
+    - Not every physical page needs to be used
+  - Example
+    - 64 KB virtual
+    - 16 KB physical
+
+What's in a page table entry?
+  - Valid bit: set if logical page number has a corresponding physical frame in memory
+    - if not valid, remainder of PTE is irrelevant
+  - Page frame number: page in physical memory
+  - Referenced bit: set if datea on the page has been accessed
+  - Dirty (modified) bit: set if data on the page has been modified
+  - Protection information
+
+Mapping logical to physical address
+  - Split address from CPU into two pieces
+    - Page number (p)
+    - Page Offset (d)
+  - Page number
+    - Index into page table
+    - Page table contains base address of page in physical memory
+  - Page offset
+    - Added to base address to get actual physical memory address
+  - Page size = 2^d bytes
+
+Every page is guaranteed to fit into any page frame that is available
+
+Swapping: Leaving room to grow
+  - Need to allow for programs to grow
+    - Allocate more memory for data
+    - Larger stack
+
+Page table size
+  32 bit addresses
+    20Bit 16 bit
+  PT
+    2^20 -> 1 M
+    each table entry contains more than a single byte
+    so 4 MB in size total
+
+  64 bit
+    43 | 21
+  PT
+    2^43 * 4 -> 32 TB
+
+Two-Level page tables
+  - Page tables can be too large
+  - So use multi-level page tables
+    - Page size in first page table is large (megabytes)
+    - PTE marked invalid in first table needs no 2nd level table
+  - 1st level page table has pointers to 2nd level page table
+  - 2nd level page table has actual physical page numbers in it

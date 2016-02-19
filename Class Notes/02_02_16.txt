@@ -1,0 +1,130 @@
+02_02_16
+COEN 177 Operating Systems
+
+What's on the midterm?
+  - memory management
+    - up to virtual memory
+    - best/worst/... fit
+    - swapping - process memory images
+  - not so much name memorization
+  - overlays
+  - protection for processes -> shouldn't overwrite existing
+    - memory access of one process doesn't effect another
+  - relocation
+    -
+
+
+Swapping: Leaving room to grow
+  - need to allow for programs to grow
+    = allocate more memory for data
+    = larger stack
+  - handled by allocating more space than is necessary at the start
+    = Inefficient: wastes memory that's not in use
+  - need relocation to support multiple properties in RAM
+    = Also if you want to do swapping
+  - grow up until it hits the stack
+    = stack tends to be allocated at the top
+
+Data structures to track memory
+  - Bitmap
+  - Linked List
+
+Tracking memory usage: bitmaps
+  - Keep track of free/allocated memory regions with a bitmap
+  - Chunk size determines efficiency
+
+Virtual and Physical addresses
+
+Address translation architecture
+
+Two-level page tables
+  - Find which superpage you're looking for
+  - Only subpart
+    = most significant bit
+  - How much space is saved? 64 bit addresses
+    - 64-bit addresses
+    - 16MB Pages? K 10, M 20, G 30, T, P, X, Z, Y
+      - 16MB
+        2^4*2^20B
+        2^24 B
+        page offset -> 24 Bits
+          so 40-bits left
+          PT
+            2^64
+            4-byte/PT.E.
+            so 4TB
+    - 2^20 bits
+        -> 4 bytes/PRIVATE
+        2^20 -> 1 MB
+        so 2 level size -> 4MB each, 12 MB total
+        for every entry, there is a 2nd level page table
+
+2-level address translation example
+  - still needs 2 extra memory accesses to make 1
+
+Implementing page tables in hardware
+  - TLB
+  - Page table resides in main (physical) memory
+  - Content addressable memory
+  - CPU uses special registers for paging
+    = page table base register (PTBR) points to the page table
+    = page table length register (PTLR) contains length of page table: restricts maximum legal logical address
+  - translating na address requires two memory accesses
+    = 1st access reads page table entry (PTE)
+    = 2nd access reads teh data/instruction from memory
+  - Reduce number of memory accesses
+    = Can't avoid second access (we need the value from memory)
+
+TLB Translation Lookaside Buffer
+  - Search the TLB for the desired logical page number
+    = search entries ni parallel
+    = uses standard cache techniques
+  - If desired logical page number is found, get frame number from TLB
+  - If desired logical page number isn't found
+    = Get frame number from page table in memory
+    = Replace an entry in the TLB with the logical & physical page number from this reference
+  - Mostly won't have to look anywhere else, just look at the TLB to find the appropriate address
+    = Don't find it? Look it up, add it to the TLB -> only once
+
+Handling TLB misses
+  - If PTE isn't found in TLB, OS needs to do the lookup in the page table
+  - Lookup can be done in hardware or software
+  - Page isn't in RAM? MMU has been helping up until now
+    = Nothing MMU can do to help at this point
+    = Somebody has to go get the page and put it in RAM -> page fault
+      - now blocked on I/O -> inelligible to be scheduled until page is in RAM
+      - Now TLB entries are useless -> they only applied to the current process, not the new
+        = Context switch is expensive
+  - Hardware TLB replacement
+    = CPU hardware does page table lookup
+    = Can be faster than software
+    = LEss flexible than software, and more complex hardware
+  - Software TLB replacement
+    = OS gets TLB exception
+    = Exception handler does page table lookup & places the result in the TLB
+    = Program continues after return from exception
+    = Larger TLB (lower miss rate) can make this feasible
+
+How long do memory accesses take?
+  - Assume the following times:
+    = TLB lookup time = a (often zero-overlapped in CPU)
+    = Memory access time = m
+  - Hit ratio (h) is percentage of time that a logical page number is found in the TLB
+    = Larger TLB usually means higher h
+    = TLB structure can affect h as well
+  - Effective access time (an average) is calculated as:
+    = EAT = (m+a)h + (m + m + a)(1-h)
+    = EAT = a+(2-h)m
+    = make h big -> want it to be as close to 1 as possible
+      - so don't write code that jumps around a lot
+  - Interpretation
+    = Reference always requires TLB lookup, 1 memory access
+    = TLB misses also require an additional memory reference
+    = seems like each access only took 1 cpu clock clycle
+
+UNDERSTAND WHY 2-LEVEL AND INVERTED PAGE TABLES ARE GOOD
+  - ALSO WHY ARE WE DOING THIS?
+
+Inverted page table architecture
+  - ONe frame of memory per table
+  - One-to-One correspondence between page table entries and pages in memory

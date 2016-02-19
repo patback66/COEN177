@@ -1,0 +1,100 @@
+01_26_16
+COEN 177 Operating Systems
+
+Detecting Deadlocks using graphs
+  - Graph contains a cycle -> deadlock
+    - need to mechanically detect deadlock
+  - O(n^2)
+
+Recovering from Deadlock
+  - Recovery through preemption
+    - Take a resource from another
+    - depends on nature of the resource and the process
+  - Recovery through rollback
+    - checkpoint a process periodically
+    - Use a saved state
+  - Recovery through killing processes
+    - Crudest but simplest - kill one of the processes in deadlock
+    - Other processes can get its resources
+    - Try to choose a process that can be rerun from the start
+      - pick one that hasn't run too far already
+      - one that holds up a lot of resources
+
+Resource Trajectories
+  - Way to block off resources that the resource might want
+
+Safe and unsafe States
+  - Who needs the least to get to their max? N checks
+
+Banker's Algorithm for a single resource
+  - Before granting a request, ensure that a sequence exists that will allow all processes to complete
+    - Use previous methods to find such a sequence
+    - If a sequence exists, allow the requests
+    - If no sequence, deny
+  - Can be slow: must be done at each request
+  - Check if about to deadlock
+
+Preventing deadlock
+  - Can be completely prevented
+  - Ensure that at least one of the 4 conditions never occurs
+    - Mutual Exclusion
+    - Circular wait
+    - Hold & wait
+    - No Preemption
+  - Not always possible
+
+Eliminating mutual exclusion
+  - Some devices (like a printer) can be spooled
+    - only the printer daemon uses printer resource
+    - eliminates deadlock
+
+Hold and Wait
+  - Process requests resources before starting
+  - Variation: a process must give up all resources before making a new request
+
+Deadlock prevention
+  - Mutual exclusion
+    - spool everything
+  - Holda nd wait
+    - request all resources initially
+  - No Preemption
+    - take resources away
+  - Circular wait
+    - order resources numerically
+
+-----------------
+
+Memory Management
+
+In an ideal world
+  - Ideal
+    - large
+    - fast
+    - non-volatile (doesn't go away when power is turned off)
+  - Real world:
+    - fast
+    - large
+    - affordable
+    - pick two
+  - Goal
+    - make the real world look as much like the ideal world as possible
+
+Memory Hierachy
+
+Memory management
+  - Components include
+    - OS
+    - Single process
+  - Goal
+    - lay these out in memory
+    - memory protection may not be an issue (only one program)
+    - felxibility may still be useful (allow OS changes, etc.)
+  - No swapping or paging
+
+Fixed partitions: multiple programs
+  - Fixed memory partitions
+    - divide memory into fixed spaces
+    - assign a process to a space when it's free
+  - Mechanisms
+    - Separate input queues for each partition
+    - Single input queue: better ability to optimize CPU usage

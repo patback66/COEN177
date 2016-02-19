@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1454549069 source:/home/maskoken/Dropbox/Documents/COEN177/Labs/Lab3/Lab3/Simulate.cpp
+
+1454552130 source:/home/maskoken/Dropbox/Documents/COEN177/Labs/Lab3/Lab3/LRU.cpp
+	<stdio.h>
+	<stdlib.h>
+	<errno.h>
+	<stdlib.h>
+	<deque>
+	<ctype.h>
+

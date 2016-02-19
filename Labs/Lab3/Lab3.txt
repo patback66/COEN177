@@ -1,0 +1,48 @@
+COEN 177 Lab 3
+Page Replacement
+
+Pay close attention to how the program has to work
+  - very specific way to output/input
+  - specific interface in mind
+
+4 different page replacement simulators
+  - make graphs of their behavior, compare to each other
+
+What to do when the page is missing?
+
+Second Chance
+  - builds on top of least recently used
+  - don't throw out the first time, flag for throwing out, check through others if they have been flagged, default back to the one that was flagged if no others
+  - Come in with the bit flagged
+    - cursor moves down each time
+    7, 0, 1, 2, 0, 3, 0, 4
+    7(1), 0(1), 1(1)
+    add 2
+    7(0), 0(0), 2(0)
+    1(1), 0(0), 2(0)
+    If it has a 1, set to 0 and move on
+    If it has a 0, replace it
+LRU
+  - least recently used
+  - most recently grabbed page goes to head of cache
+  - if already in cache, move to front
+LFU
+  - least frequently used
+  - need to keep track for each page in the cache how many times it has been used
+    - also keep access order, preserve order so that can default to least recently used
+      - in case of same number of times used
+Do a fourth from the book
+
+Output whatever number just came in if it results in a page fault
+  - not already in cache? page fault
+
+Once the simulator is working,
+  for each algorithm
+    run for different page sizes
+    graph the number of page faults
+    you will see the differences
+    for uniform behavior: more than 500
+
+./prog < infile.txt //redirect standard in
+./prog > outfile.txt //redirect standard out
+./prog 2> errfile.txt //redirect standard error

@@ -1,0 +1,158 @@
+02_16_16
+COEN 177 Operating Systems
+
+Memory
+
+Local vs. Global allocation policies
+  - What is the pool o fpages eligible to be replaced?
+    = Pages belonging to the process needing a new page
+    = All pages in the system
+  - Local allocation: replace a page from this process
+    = may be more "fair": penalize processes that replace many pages
+    = can lead to poor performance: some processes need more pages than others
+  - Global allocation: replace a page from any process
+
+Page fault rate vs. Allocated frames
+  - Local allocation may be more "fair"
+    = don't penalize other processes for high page fault rate
+  - Global allocation is better for overall system performance
+    = Take page frames from processes that don't need them as much
+    = Reduce the overall page fault rate (even though rate for a single process may go)
+
+Control overall page fault rate
+  - Despite good designs, system may still thrash
+  - Most (or all) processes have high page fault rate
+    = Some processes need more memory
+    = But no processes need less memory (and could give some up)
+  - Problem: now way to reduce page fault rate
+    = Solution
+      - Reduce number of processes competing for memory
+      - Swap one or more to disk, ddivide up pages they held
+      - reconsider degree of multiprogramming
+
+How big should a page be?
+  - Smaller pages have advantages
+    = Less internal fragmentation
+    = Better fit for various data structures, code sections
+    = Less unused physical memory (some pages have 20 useful bytes and the rest isn't needed currently)
+  - Larger pages are better because
+    = Less overhead to keep track of them
+      - Smaller page tables
+      - TLB can point to more memory (same number of pages, but more memory per page)
+      - Faster paging algorithms (fewer table entries to look through)
+    = More efficient
+
+Separate Instruction & Data address spaces
+
+Sharing pages
+  - Processes can share pages
+    = Entries in page tables point to the same physical page frame
+    = Easier to do with code: no problems with modification
+  - Virtual addresses in different processes can be
+    = The same: easier to exchange pointers, keep data structures consistent
+    = Different: may be easier ot actually implement
+      - Not a problem if there are only a few shared regions
+      - can be very difficult if many processes share regions with each other
+
+WHen are dirty pages written to disk?
+  - On demand (when they're replaced)
+    = Fewest writes to disk
+    = Slower: replacememnt takes twice as long (must wait for disk write and disk read)
+  - Periodically (in the background)
+    = Background process scans through page tables, writes out dirty pages to disk
+
+Implementation issues
+  - Four tiems when OS involved with paging
+    = less work to clone a running process
+  - Process Creation
+    = Determine program size
+    = Create page table
+  - During Process execution
+    = Reset the MMU for new process
+    = Flush the TLB (or reload it from saved state)
+  - Page fault time
+    = Determine virtual address causing fault
+    = swap target page out, needed page in
+  - Process termination time
+    = release page table
+    = return pages to the free pool
+  -> only create new data when it differs
+
+How is a page fault handled?
+
+Backing up an instruction
+
+Locking pages in memory
+  - Virtual memory and I/O occasionally interact
+  - P1 issues call for read from device into buffer
+  - Solution: allow some pages to be locked into memory
+    = locked pages are immune from being replaced
+    = Pages only stay locked for (relatively) short periods
+
+Storing pages on disk
+  - swap partition
+  - pages removed from memory are stored on disk
+  - where are they placed?
+    = Static swap area: easier to code, less flexible
+    = dynamically allocated often uses a special file (managed by the file system) to hold pages
+  - need to keep track of which pages are where within the on-disk storage
+
+Separating policy and mechanism
+  - frequency based
+  - Mechanism for page replacement has to be in kernel
+    = modifying page tables
+    = reading and writing page table entries
+  - Policy for deciding which pages to replace could be in user space
+    = more flexibility
+
+DONE WITH MEMORY -> WHAT'S THAT????
+===================================
+
+I/O
+
+How fast is I/O hardware
+
+Memory-Mapped I/O
+
+How is memory mapped I/O done
+  - Single bus
+    = all memory accesses go over a shared bus
+    = I/O and RAM accesses on shared bus
+  - Dual-bus
+    = ram access over high-speed bus
+    = I/O access over lower-speed bus
+    = less conmpetition
+    - more hardware
+
+Harware's view of interrupts
+
+I/O Software: goals
+  - Device independence
+    = programs can access any I/O device
+    = No need to specify device in advance
+  - Uniform naming
+    = name of a file or device is a string or an integer
+    = Dosn't depend on the machine (underlying hardware)
+  - Error handling
+    = Done as close to the hardware as possible
+    = Isolate higher-level software
+  - synchronous vs. asynchronous transfers
+    = Blocked transfers vs. interrupt-driven
+  - buffering
+    = data coming off a device cannot be stored in final destination
+  - sharable vs dedicated devices
+
+Programmed I/O: printing a page
+SPIN LOCK
+
+Interrupt-driven I/O
+
+I/O using DMA
+  - code run by system call
+  - code run at interrupt time -> efficient
+
+Buffering device input
+
+Disk drive structure
+
+READ UP ON PAGE REPLACEMENT ALGORITHMS
