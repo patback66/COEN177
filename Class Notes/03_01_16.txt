@@ -1,0 +1,91 @@
+03_01_16
+COEN 177 Operating Systems
+
+File Systems
+
+Linked Alllocation using a table in RAM
+  - Create the file
+    = mark off blocks as used
+  - then create memory entry
+
+  - clusters
+    = fixed size vs block size
+
+  - Max size of a file in a system like this
+    = everything - size of table
+
+Using a block index for allocation
+  - Store file block addresses in an array
+    = Array itself is stored in a disk block
+    = Directory has a pointer to this disk block
+    = non-existent blocks indicated by -1
+
+Larger files with indexed allocation
+  - Using index blocks instead
+  - now unlimited file size (used to be 4MB)
+  - read 4M work of blocks, then move to next
+
+Two-level indexed allocation
+  - Allow larger files by creating
+
+Linux inode: file indexing
+  - length in bytes
+  - keeps track of whole blocks
+
+Grouping Data
+  - inodes, data blocks
+
+Large-scale structure in Ext3
+  - Boot block, block groups
+  - Block group: super block, group descriptors, data block bitmap, inode bitmap, inode table, data blocks
+
+Does a file need to have a name
+
+Two-level indexed allocation
+  - allow larger files by createing an index of index blocks
+
+Block allocation with extents
+  - reduce space consumed by index pointers
+    = store <block, count>
+  - Lookup procedure
+    = find correct index block by checking the starting file offset for each ined block
+    = find correct <block, count> entry by runninng through index block, keeping tack of how far into file the entry is
+    = find correct block in <block, count> pair
+
+Managing free space: linked list
+  - use a linked list to manage free blocks
+
+What's in a directory?
+  - Two types of information
+    = file names
+    = file metadata (size, timestamps, etc) -> inodes
+  - basic choices for directory information
+    = store all information
+
+Checking a file system for consistency
+  - Consistent
+  - Duplicate block in free list
+  - Missing
+  - Duplicate block in two files
+
+File system cache
+  - Many files are used repeatedly
+    = Option: read it each time from disk
+    = Better:
+
+File block cache data structure
+  - LRU list of blocks crossed with list of blocks, which belong to which file
+  - LRU caches work well for reading
+
+Log-structured file systems
+  - Trendss in disk & memory
+    = larger, faster
+  - LFS structures entire disk as a log
+    = all writes initially buffered in memory
+    = Periodically write these to the end of the disk log
+    = When file opened, locate i-node then find blocks
+  = Issue: what happens when blocks are deleted?
+
+Allocation table data structures
+Direct, indirect, double ... triple indirect pointers to data
+Create file entry directory then mark blocks as used

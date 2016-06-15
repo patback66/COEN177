@@ -1,0 +1,218 @@
+03_08_16
+COEN 177 Operating Systems
+
+Final: Not comprehensive
+
+What will it cover:
+  after page tables
+
+Security
+  - If it goes through RAM, it's potentially insecure
+
+Dealing with Covert Channels
+  - Availability on data,
+
+Covert Channels
+  - Circumvent security model by susing more subtle ways of passing information
+  - Can't directly send data against system's wishes
+  - Send data using "side effects"
+    = Allocating resources
+    = Using the CPU
+    = Locking a file
+    = Making small changes in legal data exchange
+  - Very difficult to plug leaks in covert channels
+
+Steganography
+  - hide information in other data
+  - Images -> encrypt in rgb
+
+Protection Domains
+  - Three protection domains
+    = Each lists objects with permitted operations
+  - Domains can share objects & permissions
+    = Objects can have different permissions in different domains
+    = There need be no overlap between object permissions in different domains
+  - How can this arrangement be specified more formally?
+
+Protection Matrix
+  - each domain has a row in the matrix
+  - each object has a column in the matrix
+  - Entry for <object,column> has the permissions
+  - Who's allowed to modify the protection matrix?
+    = What changes can they make
+  - How is this implemented efficiently?
+  - Often 3 domains
+
+Representing the protection matrix
+  - Need to find an efficient representation of the protection matrix (also called the access matrix)
+  - Most entries in the matrix are empty!
+  - Compress this
+
+Access Control Lists
+  - Unix file system
+
+Capabilities
+  - Each process has a capability list
+  - List has one entry per object the process can access
+
+Cryptographically protected capability
+  - Server, Object, Rights
+  - Rights include generic rights (read, write execute) and
+    = copy capability
+    = copy object
+    = remove capability
+    = destroy object
+  - secure one way hash
+  - server has a secret (check) and uses it to verify capabilities presented to it
+    = alternatively, use public-key signature techniques
+
+Protecting the access matrix: summary
+  - OS must ensure that the access matrix isn't modified (or even accessed) in an unauthorized way
+  - Access control lists
+    = Reading or modifying the ACL is a system call
+    = OS makes sure the desired operation is allowed
+  - Capability lists
+    = Can be handled the same way as ACLs: reading and modification done by OS
+    = Can be handed to processes and verified cryptographically later on
+    = may be better for widely distributed systems where capabilities can't be centrally checked
+
+Reference Monitor
+
+Attacks on Computer systems
+  - Trojan horse -> not what you think it is
+  - Logic bombs -> code that does what it should for a while then goes off
+  - Trap doors
+  - Viruses -> malware. Code that you don't intend to run
+    = Virus vs worm depends on how the code gets onto your system
+    = Virus must be attached to existing code to transfer
+    = Worm copies itself from system to system
+  - Exploiting bugs in OS code
+
+BUffer overflow
+  - source of bugs in OS
+    = most common in user-level programs that help the OS do something
+    = May appear in "trusted" daemons"
+    = accept string longer than what you can
+  - Exploit by modifyiing the stack to
+    = return to a different address than that intended
+    = Include code that does something malicious
+  - overwrite return address
+  - Acoomplihsed by writing past the end of a buffer on the stack
+
+Design principles for security
+  - System design should be public
+  - Default shoudl be no access
+  - Check for current authority
+  - Give each process least privilege possible
+  - Protection mechanism should be
+    = Simple
+    = Uniform
+    = In the lowest layers of system
+  - Scheme should be psychologically acceptable
+  - Biggest thing: keep it simple!
+
+Where viruses live in the program
+  - Executable, header [jump to starting address]
+  - Executable, virus, header [jump to virus]
+    = or at the beginning
+    = or intersperced in program's free spaces
+
+Viruses infecting the operating system
+
+How do they spread?
+
+Hiding a virus in a file
+  - start with an uninfected program
+  - add teh virus to the end of the program
+    = problem: file size changes
+    = solution: compression
+  - Compressed infected program
+    = Decompressor: for running executable
+    = Compressor: for compressing newly infected binaries
+    = lots of free space (if needed)
+  - Problem (fo virus writer): virus easy to recognize
+
+Using encryption to hide a virus
+  - encryp the viruse to hide it
+    = vary the key in each file
+    = virus "code" varies in each infected file
+  - even better: leave only the decryptor and key in the clear
+
+Polymorphic viruses
+  - generate code that does the same thing in different ways
+
+How can viruses be foiled?
+  - Integrity checkers
+  - Behavioral checkers
+  - Avoid viruses by
+    = a good (secure) OS
+    = Installing only shrink-wrapped software (just hope that the shrink-wrapped software isn't infected)
+    = Using antivirus software
+    = Not opening email attachments
+  - Recovery from virus attack
+    = recover from backup
+
+  Worms vs viruses
+    - 1988 Internet Worm
+    - worm self-running (separate process)
+
+Mobile code
+  - goal: run (untrusted) code on my machine
+  - Problem: how can untrusted code be prevented from damaging my resources
+  - One solution: sandboxing
+    = Memory divided into sandboxes
+    = Accesses may not cross sandbox boundaries
+    = Sensitive system calls not in the sandbox
+  - Another: interpreted code
+    = Run the interpreter rather than the untrusted code
+    = INterpreter doesn't allow unsafe operations
+      - un code in a virtual machine (VMware)
+  - Third: signed code
+    = use cryptographic techniques to sign code
+    = check to ensure that mobile code signed by reputable organization
+
+User authentication
+  - Problem: how does the computer know who you are?
+  - solution: use authentication to identify
+
+Authentication using passwords
+  - Don't notify the user of incorrect user name until after the password is entered
+
+Dealing with passwords
+  - should be memorable (don't write them down)
+  - shouldn't be stored in the clear
+    = password file often readable by all system users
+    = must be checked against entry in the file
+  - Solution: use hashing to hide "real" password
+    = One-way function converting password to meaningless string of digits (unix pasword hash, md5, sha-1)
+    = Difficult to find another password that hashes to the same random-looking string
+    = knowing hte hashed value and hash function gives no clue to the original password
+
+Salting the passwords
+  - passwords can be guessed
+    = store hash and random bit of extra data
+    = before starting, build a table of all dictuionary words, names, etc.
+      - table has each potential password in both plain and hahsed form
+    = hackers can get a copy of the password file
+      - for each entry in the password file, see if the password is in the above table
+      - if it is ,you have a passsword: works on more passowrds than you'd think
+
+Sample breakin (from LBL)
+  - SET THE ADMIN PASSWORD TO BE STRONG
+
+Authentication using a physical object
+  - magnetic card
+    = store a password encoded in the magnetic strip
+    = longer, harder to memorize passwords
+  - Smart card
+    = Card has secret encoded on it, but not externally readable
+    = Remote computer issues challenge to the smart card
+    = smart card computes the respones and proves it knows the secret
+
+
+Research assignment
+  - write about 1 file system
+    = what makes it special (like Venti)
+  - write about authentication mechanisms that we haven't talked about
+  Due friday of finals week
+  1.5-2 pages top

@@ -1,0 +1,141 @@
+03_03_16
+COEN 177 Operating Systems
+
+Secrets
+  - what does the supervisor mode need
+    = handle the system calls
+    = interrupt handlers
+    = need this -> safety checks
+  - Passwords
+    = I am Bob, here's my proof -> authenticate yourself to the os
+    = Send a challenge
+
+Passwords
+  - how do you keep them?
+  - secure hashing
+
+Security environment: threats
+  - Goals: data confidentiality, data integrity, exposure of data
+  - Threats: exposure of data, tampering with data, denial of service
+  - Operating systems have goals
+    = confidentiality, integrity, availability
+  - Someone attempts to subvert the goals
+    = fun, commercial gain
+
+What kinds of intruders are there?
+  - casual prying by nontechnical users
+  - snooping by insiders
+  - espionage
+  - want to make money/mischeif
+
+Accidents cause problems
+  - acts of nature, wars
+  - Hardware or software error
+    = cpu malfunction, disk crash, program bugs
+  - human errors
+    = data entry
+  - Who can access what data?
+
+Cryptography
+  - Goal: keep information from those who aren't supposed to see it
+    = scramble the data
+  - Use a well-known algorithm to scramble data
+    = two inputs: data & key
+    = key known only to authorized users
+    = relying upon the secrecy of the algorithm is a bad idea (WW2 enigma)
+  - cracking codes is very difficult, Sneakers and Swordfish (and other movies) notwithstanding
+    = Mercury Rising
+
+Cryptography basics
+  - Algorithms (E, D) widely known
+  - Keys (KE, KD) less widely distributed
+  - ciphertext should be the only information that's available to the world
+
+Secret-key encryption
+  - monoalphabetic substitution
+  - Vignere cipher
+
+Modern encryption algorithms
+  - DES Data Encryption Stndard
+    = 56 bit keys
+    = same key to encrypt and decry[t
+    = Keys used to be difficult to guess
+      - 2^55 keys on average tried
+      - but modern comp can make many guesses ere second
+      - special hardware - break easily
+  - Current algorithms (AES, Blowfish) use at least 128 bit keys
+    = Adding one bit to the key makes it twice as hard to guess
+    = must try 2^127 keys on average
+    = not typically broken by brute force
+
+Unbreakable codes
+  - there is such thing as an unbreakable code: one-time pad
+    = truly tandom key as long as the message to be encoded
+    = xor the message with the key a bit at a time
+  - code is unbreakable
+    = key could be anything
+    = without knowing key, message could be anything with the correct number of bits in it
+  - Difficulty: distributing key is a hard as distributing message
+    = can be easier because of timing
+  - Diffuclty: generating truly random bits
+    = can't use computer random number generator
+    = May use physical processes
+      - radioactive decay
+      - leaky diode
+      - lava lamps
+      - webcams with lens cap on
+
+Public-key cryptography
+  - don't use a single shared secret, keys come in pairs
+    = one key of each pair distriibuted widely (public key), Ku
+    = One key of each pair kept secret (private or secret key), Kr
+    = Keys are inverses of one another, but not identical
+    = Encryption & decryption are the same algorithm, so E(Ku,E(Kr,M))=E(Kr,E(Ku,M)) =M
+  - what one key does, the other undoes
+  - Currently, the most popular method involves primes and exponentiation
+    = difficult to crack unless large numbers can be factored
+    = very slow for large messages
+
+One-way functions
+  - function such that
+    = given formula for f(x), easy to evaluate y=f(x)
+    = given y, infeasible to find any x such that y = f(x)
+  - Often, operate similar to encryption algorithms
+    = produce fixed-length output rather than variable length output
+    = similar to XOR-ing blocks of ciphertext together
+  - Common algorithms include
+    = MD5 -> 128-bit result
+    = SHA-1 -> 160-bit result
+  - weak and strong properties
+  - deal with public key encryption -> slow
+
+Digital Signatures
+  - combination of one-way hash & public-key to sign documents
+  - Digital signature computed by
+    = applying one-way hash function to original document
+    = encryptiong result with sender's private key
+  - Receiver can verify by
+    = applying one-way hash function to reeived document
+    = decrypting signature using sender's public key
+    = comparing the two results: equality means document
+
+Pretty good privacy (PGP)
+  - Uses public key encryption
+    = facilitates key distribution
+    = allows messages to be sent encrypted (with person's public key)
+    = allows person to send message that must have come from her (encrypt with person's private key)
+  - problem: public key encryption is slow
+  - solution: public key encryption to exchange a shared key
+    = shared key is relatively short (~128 bits)
+    = message encrypted using symmetric key encryption
+  - PGP can also be used to authenticate the sender
+    = use digital signature and send message as plaintext
+
+User authentication
+  - Problem: how does the computer know who you are?
+  - Solution: use authentication to identify
+    = something the user knows, has, is
+  - this must be done before user can use the system
+  - Important: from the computer's point of view...
+    = Anyone who can duplicate your ID is you
+    = Fooling a computer isn't all that hard

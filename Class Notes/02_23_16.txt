@@ -1,0 +1,189 @@
+02_23_16
+COEN 177 Operating Systems
+
+IO/File systems
+  - Where to place data on a drive?
+
+Must be able to store/retrieve data on permanent storage -> filesystem
+  - associates a name with a chunk of data
+
+Make the seek time faster for a logically spinning disk?
+  - smaller platter
+  - don't use the whole disk
+  - add another arm
+  - but the technology is limited -> can only be improved so far
+
+Disk "zones"
+  - Outside tracks are longer than inside tracks
+  - Two options for longer tracks
+    = bits are "bigger"
+    = more bits (transfer faster)
+  - modern hard drives use second options
+    = more data on outer tracks
+  - Disk divided into zones
+    = constant sectors per track in each zone
+    = 8-30
+
+Disk "addresssing"
+  - millions of sectors on the disk must be labeled
+  - Two possibilities
+    = cylinder/track/sector
+    = sequential numbering
+  - Modern drives use sequential numbers
+
+Building a better "disk"
+  - Problem: CPU performance has been increasing exponentially, but disk performance hasn't
+    = disks are limited by mechanics
+  - Problem: disks aren't all that reliable
+  - Solution: distribute data across disks, and use some of the space to improve reliability
+    = data transferred in parallel
+    = data stored across drives (striping)
+    = parity on an "extra" drive for reliability
+
+RAIDs
+  - RAID 0 -> redundant array of inexpensive disks
+    = no redundancy
+  - RAID 1 -> mirrored copies
+    = simple 1 to 1 redundancy (identical disks)
+  - RAID 4 (RAID 10 -> RAID 1 + RAID 0)
+    = striped with parity
+    = last disk always gets all parity
+  - RAID 5
+    = Parity rotates through disks
+    = always know where the parity is -> distributed through the array
+  - care about sectors and sector repair/recovery, not byte level
+
+Auspex
+Net App
+
+How to pick which track to visit next?
+
+CD-ROM Recording
+  - data in a spiral
+    = hard drives have concentric circles
+  - one continuous track (like a vinyl record)
+
+Structure of a disk sector
+  [Preamble | DATA | ECC]
+  - preamble contains information about the sector
+    = sector number & location information
+
+Sector Interleaving
+  - On older systems, the cpu was slow -> time elapsed between reading consecutive sectors
+  - Solution: leave space between consecutively numbered sectors
+  - This isn't done much these days...
+
+What's in a disk request?
+  - Time required to read or write a disk block determined by 3 factors
+    = seek time
+    = rotational delay
+      - average delay = 1/2 rotation time
+      - Ex: rotate in 10ms, average rotation delay = 5ms
+    = Actual transfer time
+      - transfer time = time to rotate over sector
+      - Example: rotate in 10ms, 200 sectors/track -> 10/200
+
+Disk request scheduling
+  - Goal: use disk hardware efficiently
+    = bandwidth as high as possible
+    = disk transferring as often as possible (and not seeking)
+  - We want to
+    = minimize disk seek time (moving from track to track)
+
+Disk scheduling algorithms
+  - Schedule disk requests to minimize disk seek time
+  - Disk seek algorithm examples assume a request  queue & head position
+
+First-Come-First Served
+  - BAD
+  - easy to implement
+
+Shortest seek time first
+  - service the request with teh shortest seek time from the current head position
+  - STARVATION
+  - not fair to the edges
+
+SCAN (elevator algorithm)
+  - disk arm starts at one end of the disk and moves towards trhe other end, servicing requests as it goes
+    = reverses direction when it gets to the end of the disk
+
+Cylindrical Scan Algorithm (C-SCAN)
+  - SCAN, but return to 0 at the end
+    = only visit tracks when heading in a particular direction
+    = treats cylinder list as a circular list that wraps around the disk
+    = Waiting time is more uniform for cylinders near the edge of the disk
+  - consistent response times, but does work it doesn't have to do
+
+C-LOOK
+  - C-SCAN, except head only travels as far as the last request in each direction
+    = don't go to ends when you don't have to
+
+Picking a disk scheduling algorithm
+  - Best? It depends. All the time
+  - SSTF if not too many requests
+  - SCAN-type for heavy load
+    = more fair -> use LOOK to save time
+  - Long seeks aren't too expensive, so choose C-LOOK over look to make response time more even
+
+When good disks go bad
+  - disks have defects
+  - ECC helps iwht errors
+  - mark sectors as bad
+
+Flash memory
+  - VS DISK
+    = Faster, shorter access time, but lower bandwidth
+    = more expensive
+    = can be less reliable
+  - VS DRAM
+    = cheaper (a bit)
+    = non-volatile (data survives power loss)
+    = slower
+  - Use flash as a level between disk and memory
+  - Problems
+    = flash wears out -> can only write 10,000-100,000 times per memory cell
+    = not as reliable: lots of bit errors
+
+Handling flash in the OS
+  - Treat it like a disk?
+    = written in blokcs
+      - blocks have to be erased first: somewhat slow
+
+CLock hardware
+  - crystal oscillator with fixed frequency (only when on)
+    = short time intervals
+    = correct time-of-day
+  - time-of-day clock (when off)
+    = keeps minutes, hours, days
+    = not too accurate
+    = load system clock at startup
+  - Time kep in seconds and ticks
+    = often 100-1000 per second
+    = number of seconds since a particular time
+      - many versions of unix, tick 0 on Jan 1, 1970
+    = number of ticks this second
+    = advance ticks once per clock interrupt
+    = advance seconds when ticks "overflow"
+
+Keeping time
+  - Check time via th eweb
+    = protocol to get time from accurate time servers
+  - What happens when system clock is slow?
+    = advance clock to the correct current time
+    = may be done all at once or over a minute or two
+  - What happens when clock is fast
+    = time can't run backwards
+    = advance time more slowly than normal until the clock is correct
+  - Track clock drift, do periodic updates to keep clock accurate
+
+Using timers in software
+  - Use short interval clock for timer interrupts
+    = specified by applications
+    = no problems if interrupt frequency is lowest= may have multiple timers using a single clock chip
+  - Use soft timers to avoid interrupts
+    = Kernel checks for soft timer expiration before it exits to user mode
+    = less accurate than using a hardware timer
+    = how well this works depends on rate of kernel entries
+
+UP NEXT: FILE SYSTEMS/SECURITY
+  - energy and time

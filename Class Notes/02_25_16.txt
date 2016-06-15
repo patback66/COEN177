@@ -1,0 +1,159 @@
+02_25_16
+COEN 177 Operating Systems
+
+Chapter 5: I/O
+
+TLB -> "I want Bob" -> "Bob is at 3"
+
+Power Usage
+Reducing CPU power Usage
+  - Runt at full clock speed
+    = jobs finish quickly, high energy consumption
+  - Cut voltage by 2
+    = Cuts clock speed by 2: processes take longer
+    = Cuts power by 4
+    = Cuts energy consumption (= power*time) in half
+
+How can we reduce power usage?
+  - Tell the programs to use less energy
+    = May mean poorer user experience
+    = Makes batteries last longer
+  - Ex
+    = Color -> black and white
+    = Less resolution
+    = fewer image updates per second
+
+Spacial Light Modulator
+Holographic Storage
+MEMS Storage
+
+
+File Systems
+  - Files
+  - Directories & Naming
+  - File system implementation
+  - Example file systems
+
+Long-term information storage
+  - Must store large amounts of data
+    = Gigabytes -> terabytes -> petabytes
+  - Stored infomration must survive the termination of the process using it
+    = lifetime can be seconds to years
+    = must have some way of finding it
+  - Multiple processes must be able ot access the information concurrently
+
+Naming files
+  - Important to be able to find files after they're created
+  - Every file has at least one name
+  - Name can be
+    = Human-accessible:"foo.c", "my photo"
+    = Machine-usable: 1138,8675309
+  - Case may or may not matter
+    = depends on the file system
+  - Name may include information about the file's contents
+    = Certainly does for the user (the name should make it easy to figure out what's in it)
+    = Computer may use pare of the name to determine the file type
+
+File Structures
+  - sequence of bytes, sequence of records
+
+Accessing a file
+  - Sequential access
+    = read all bytes/records from the beginning
+    = Cannot jump around
+      - may rewind or back up however
+    = Convenient when medium was magnetic tap
+    = Often useful when whole file is needed
+  - Random access
+    = Bytes (or records) read in any order
+    = Essential for database systems
+    = Read can be
+      - Move file marker (seek), then read or ...
+      - Read and then move file marker
+
+File Attributes (Possibilities)
+  - bare minimum: allocation metadata, how big it is in bytes
+
+File operations
+  - create, delete, open, close, read, write, append, seek, get attributes, set attributes, rename
+
+Memory-mapped files
+  - segmented process before mapping files into its address space
+  - Process after mapping
+    = existing file abc into one segment
+    = creating new segment for xyz
+
+Directories
+  - Naming is nice, but limited
+  - Humans like to group things together for convenience
+  - File systems allow this to be done with directories (sometimes called folders)
+  - Grouping makes it easier to
+    = Find files in the first place: remember the enclosing directories for the file
+    = Locate related files (or just determine which files are related)
+
+Two-level directory system
+  - solvees naming problem: each user has her own directory
+  - by default, users access files in their own directories
+  - Extension: allow users to access files in others' direcotries
+
+Hierarchical directory system
+
+Unix directory tree
+
+Operations on directories
+  - create, delete, opendir, closedir, readdir, rename, link, unlink
+
+Carving up the disk
+  - Master boot record, partition table, partitions
+  - Partition: boot block, super block, free space management, index nodes, files & directories
+  - allocation data structures
+
+Contiguous allocation for file blokcs
+  - contiguous allocation requires all blocks fo a file to be consecutive on disk
+  - Rpoblem: deleting files leaves "holes"
+    = similar to memory allocation issues
+    - compacting the disk can be a very slow procedure
+  - Data in each file is stored in consecutive blocks on disk
+  - simple and efficient indexing
+    = start location on disk, length of the file in blocks
+  - Random access well-supported
+  - Difficult ot grow files
+    = must pre-allocate all needed space
+    = wasteful of storage if file isn't using all of the space
+  - Logical to physical mapping is easy
+
+Linked allocation
+  - file is a linked list of disk blocks
+    = blocks may be scattered around the disk drive
+    = block contains both pointer to next block and data
+    = files may be as long as needed
+  - new blocks are allocated as needed
+    = linked into list of blocks in file
+    = removed from list (bitmap) of free blocks
+  - MUST BE WRITTEN ON A HARD DRIVE
+
+Linked allocation using a table in RAM
+  - links on disk are slow
+  - Keep linked list in memory
+  - Advantage: faster
+  - Disadvantages
+    = have to copy to disk at some point
+    = have to keep in-memory and on-disk consistent
+
+Finding blocks with linked allocation
+  - Directory structure is simple
+  - no wasted space - all blocks can be used
+  - Allocation table is simple and fast way to take care of linked allocation
+
+Using a block index for allocation
+  - store file block addresses in an array
+    = array itself is stored in a disk block
+    = directory has a pointer to this disk block
+    = non-existent blocks indicated by -1
+  - random access easy
+  - Limit on file size
+
+Allocation tables: central data structure, FAT style
+
+BE READ UP ON MATERIAL THROUGH I/O
+  - HAVE QUESTIONS READY

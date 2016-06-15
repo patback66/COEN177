@@ -1,0 +1,96 @@
+03_10_16
+COEN 177 Operating Systems
+
+Final
+  - Everything after The midterm
+  - Page replacement algorithms
+
+Lying is bad... except in system software
+
+Research assignments:
+Really any topic you'd like
+  - related to operating systems
+  - Waffle file system
+
+Inodes
+
+Is it useful?
+
+IO - Blocks on disk
+
+WRITE YOUR ASSUMPTIONS ON THE TEST
+NOT COMPREHENSIVE
+ONLY MATERIALS FROM PAGE REPLACEMENT
+  - allocation problems on file systems
+  - same general concepts applied to a new domain
+
+Security material: no recall
+
+Review session: tuesday early afternoon
+
+Permissions
+  - reading anything at your level and below
+  - writing: write for your security level or above
+    = has to do with integrity
+    = don't allow somebody the ability to change something
+
+Ethics:
+Security
+
+Trapdoors & Backdoors
+  - Good or bad? It depends
+
+The Logic Bomb
+
+Server-Based DRM
+  - Selling license to use software
+
+Cold Passwords
+
+Caching Data
+
+Exploiting Vulnerability
+  - Terms of service, who owns the device you're accessing
+  - How it's used vs how it can be used vs how it's intended to be used
+
+File Block Data Caches
+  - Don't cache entire files, cache disk blocks
+  - Cache recently/most used portions that are read
+  - Local vs global allocation
+  - Block replacement - LRU linked list would work, or circular
+    = but need to be able to find the blocks in memory
+  - LRU list of blocks, extra pointers to the blocks
+
+Other topics for reports
+  - venti/waffle
+  - I/O -> shingled magnetic write disks
+
+  - thick lines, but write overlapping to give thin lines
+    = Write a track followed by tracks overlapped
+    = slower to write data in the same location
+
+  - I/O Domain
+  -Security
+    = The standard c library is turing complete
+    = Buffer overflow injections
+    = Return oriented
+
+    = Authentication methods
+    = Randomness - random isn't random - clock biases
+  - Disk scheduling/allocation
+
+  *****Find the source and critique it
+    - review of the topic that interests you
+    - 1-2 page report
+    - What's the core thesis?
+    - How well do they satisfy the thesis? Motivate?
+
+
+Stack Algorithms
+  How is modeling done?
+
+  Belady's anomaly
+    - reduce teh number of page faults by supplying more memory
+    - Sometimes (with the same pages) you can have more faults with more memory
+    - Mostly on stack algorithms
+    - order independent of amount of ram the system has
