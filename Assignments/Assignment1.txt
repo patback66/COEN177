@@ -1,0 +1,38 @@
+Assignment 1
+Due Jan 21 by 11:59pm  Points 100 Submitting a text entry box or a file upload Available Jan 13 at 4pm - Feb 5 at 11:59pm 23 days
+This assignment was locked Feb 5 at 11:59pm.
+Programming Assignment #1: Creating Processes
+Due Date: Demo by your next lab at the latest (week of January 20th), submit code, documentation, and solution before that next lab 
+
+The Basic Programming Task (up to 30 points)
+
+The goal of this assignment is to make sure you fully comprehend (and are able to realize) the creation of processes with Unix-like operating systems. To this end you will be using the fork() system call.
+
+You are to write a very simple shell program, similar to the example covered in lecture. The shell should terminate if the user enters “exit” at the command line, and should attempt to launch a program in response to any other input string. You do not have to parse any parameters, nor do you need to support background execution of processes. The simplest possible shell to demonstrate is all that is required. You may wish to write a “hello world” program, so that you have an executable file that you could launch from your shell.
+The Second Task - Homework (up to 40 additional points):
+
+ 
+
+Consider the following fragment of code:
+
+for (i=1; i < 6; i++) fork();
+
+Given your understanding of the fork() system call, and assuming this code were to be executed by a single process, and that this process performed no other calls to fork() and never terminated, then answer the following question: How many processes would be running after this loop completes (in all processes that will ultimately run it).
+
+This portion of the assignment is a written homework, and you are to include with your submission a write-up of your answer and - this is very important - an explanation of why you believe your answer to be correct.
+
+ 
+
+The Demo (up to an additional 30 points)
+
+You are to demo your final code to the TA. Be prepared to answer questions about your code, as this will account for the final 30 points of this assignment.
+ 
+ 
+The Details 
+
+You must submit the following:
+
+The source code for your solution.
+Documentation of your solution, which should include how it works, and how you tested your solution. Where necessary, your documentation should assume your code will be tested on the linux workstations in the design center.
+A numerical answer to the homework question, including an explanation of your answer.
+Failure to provide complete documentation (either within the source file, as a detailed header comment, or as an accompanying README file), will result in a penalty, as would providing code that does not solve the problem, or is not readily testable on the school linux systems. It is your responsibility to make sure that you submit the code and documentation before the deadline (next week), and that you are prepared to demo your code for the TA in lab.

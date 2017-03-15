@@ -1,0 +1,13 @@
+Assignment 4
+Due Feb 26 by 11:59pm  Points 100 Submitting a text entry box or a file upload Available Feb 17 at 4pm - Feb 26 at 11:59pm 9 days
+This assignment was locked Feb 26 at 11:59pm.
+Your goal in this assignment is not to implement any major new code, but to conduct an experiment using the simplest possible code you can develop to read/write a fixed amount of data from/to a file. The deliverable is any code you write, and a report, all of which are intended to answer one question: How fast is I/O when using the filesystem? This question is deliberately vague (the “speed” can vary depending on whether you are reading or writing, on how much data -if any - is being read/written, and how the underlying OS is performing data caching), but your goal is to come up with a result (or set of results) that can answer this question to the best of your ability.
+ 
+You have the freedom to use any programming language you wish, but we will be supporting C in the lab, and you are encouraged to use C (or a similarly low-level language) to make sure you can explain clearly the operations you are timing. You can time operations within your code, or use command-line tools like “time” to measure the runtime of your test program.
+ 
+You may use any command line tools, scripting languages, or simply C to run your experiments and collect your performance numbers, but for assignment credit you should explain how you decided to conduct your experiment. If you are using the "time" command to measure runtime of your code, then please be careful to read the documentation for that command to understand the different numbers it can report, and include in your documentation a clear explanation of what the numbers you collected represent.
+Example factors to consider: Reading data from a file will take a different amount of time from writing data to a file. Reading or writing data repeatedly to the same file will not take the same amount of time each time, and may differ considerably (if it does, include some discussion of why you think that might be the case). When writing data to a file in a C or C++ program, the "write" operation might seem unusually fast (look up the "fflush" call for a hint as to why that might be the case), in other words, some write operations might only write to a buffer and not to an actual on-disk file.
+
+Your work will be judged on the quality and precision of your final report describing your experiment.
+
+Good Luck!

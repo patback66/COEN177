@@ -1,0 +1,19 @@
+Assignment 5
+Due Mar 18 by 11:59pm  Points 50 Submitting a text entry box or a file upload
+Your final assignment for this quarter is not a programming assignment, but is a short research report. You may write this report on any advanced operating systems topic that goes beyond the scope of the course material, but you will be evaluated on the overall quality of the explanation you provide. You should seek out one external technical source on the topic of your choice, and provide a short one to two page (no longer than two page) report explaining the key idea behind the work you chose and its advantages and applications. Ask yourself these two questions:
+
+-What was new about this work compared to what had preceded it?
+
+-What use is this idea to current and future users of this work?
+
+A good report will at a minimum address these two questions alongside its explanation of the topic of your choice.
+
+While you are free to select any topic of your choice, you should feel free to make use of either of the following suggestions of possible advanced topics:
+
+1. The write-anywhere file layout.
+
+2. The Venti file system intended for archival storage.
+
+ 
+
+For materials you can read on these, we have uploaded PDFs of the technical report from NetApp (an extended version of the paper published at the annual Usenix technical conference in 1994) on the first of these, and the award-winning conference paper on the second topic, to the main Modules page of the course under "optional readings."
